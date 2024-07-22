@@ -7,71 +7,78 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card, CardContent, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage } from './ui/form';
-import { Input } from "@/components/ui/input"
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { Form } from './ui/form';
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from './ui/toast'
+import { ArrowLeft, ArrowRight} from 'lucide-react'
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-  })
-
+import UserDetails from './steps/UserDetails'
+import DateTimeSelection from './steps/DateTimeSelection'
+import DocumentUpload from './steps/DocumentUpload'
+import formSchema, { FormValues } from './steps/formSchema'
 
 export default function MultiStep() {
     const [step, setStep] = useState(1);
+    const { toast } = useToast()
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const nextStep = () => {
+        setStep(prev => Math.min(prev + 1, 3))
+        setIsSubmitted(false)  // Reset submission state when moving to next step
+    }
+    const prevStep = () => {
+        setStep(prev => Math.max(prev - 1, 1))
+        setIsSubmitted(false)  // Reset submission state when moving to previous step
+    }
 
         // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-        username: "",
+            name: "",
+            subject: undefined,
+            email: "",
+            date: undefined,
+            time: "",
+            document: undefined,
         },
     })
 
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+        if (!isSubmitted) {
+            console.log("Form submitted", values)
+            toast({
+                title: `${values.subject} Review set for ${values.name}`,
+                description: `Date: ${values.date.toDateString() || 'Not set'}, Time: ${values.time || 'Not set'}`,
+                action: <ToastAction altText="okay">Okay</ToastAction>
+            })
+            setIsSubmitted(true)
+        }
     }
+
   return (
-    <motion.div className='p-2 m-4'>
-        <Card className='p-4'>
+    <motion.div className='m-4 flex flex-col items-center'>
+        <Card className='p-4 sm:min-w-fit'>
             <CardTitle>Book a Review</CardTitle>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 p-4 flex flex-col items-start m-2">
-                        <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem className='flex flex-col items-start m-2'>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                            </FormItem>
+                <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log("Form errors", errors))} className="p-4 flex flex-col m-2">
+                    {step === 1 && <UserDetails form={form} />}
+                    {step === 2 && <DateTimeSelection form={form} />}
+                    {step === 3 && <DocumentUpload form={form} />}
+
+                    <div className='pt-2 mt-4 flex flex-row justify-around items-center'>
+                        <Button type="button" onClick={prevStep} disabled={step === 1}><ArrowLeft/>Back</Button>
+                        {step < 3 ? (
+                            <Button type="button" onClick={nextStep}>Next<ArrowRight/></Button>
+                        ) : (
+                            <Button type="submit" disabled={isSubmitted}>{isSubmitted ? 'Submitted' : 'Submit'}</Button>
                         )}
-                        />
-                        <Button variant="outline" type="submit">Submit</Button>
-                    </form>
+                    </div>
+                </form>
                 </Form>
             </CardContent>
-            <div className='flex flex-row justify-around items-center'>
-                <Button><ArrowLeft/>Back</Button>
-                <Button>Next<ArrowRight/></Button>
-            </div>
         </Card>
     </motion.div>
   )
