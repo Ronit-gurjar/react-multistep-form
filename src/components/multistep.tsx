@@ -5,9 +5,10 @@ import { motion } from "framer-motion"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Card, CardContent, CardTitle } from './ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Form } from './ui/form';
+import { Progress } from "@/components/ui/progress" 
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from './ui/toast'
 import { ArrowLeft, ArrowRight} from 'lucide-react'
@@ -16,14 +17,17 @@ import UserDetails from './steps/UserDetails'
 import DateTimeSelection from './steps/DateTimeSelection'
 import DocumentUpload from './steps/DocumentUpload'
 import formSchema, { FormValues } from './steps/formSchema'
+import { Label } from './ui/label'
 
 export default function MultiStep() {
     const [step, setStep] = useState(1);
     const { toast } = useToast()
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+    const totalSteps = 3;
+
     const nextStep = () => {
-        setStep(prev => Math.min(prev + 1, 3))
+        setStep(prev => Math.min(prev + 1,totalSteps))
         setIsSubmitted(false)  // Reset submission state when moving to next step
     }
     const prevStep = () => {
@@ -60,7 +64,16 @@ export default function MultiStep() {
   return (
     <motion.div className='m-4 flex flex-col items-center'>
         <Card className='p-4 sm:min-w-fit'>
+            <CardHeader>
             <CardTitle>Book a Review</CardTitle>
+            <CardDescription>           
+                <Progress value={(step / totalSteps) * 100} className="w-full mt-2" />
+                <Label className="flex justify-between">
+                    <span>Step {step} of {totalSteps}</span>
+                    {isSubmitted ? <span>Completed🙌</span> : ''}
+                </Label>
+            </CardDescription>
+            </CardHeader>
             <CardContent>
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log("Form errors", errors))} className="p-4 flex flex-col m-2">
