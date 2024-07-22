@@ -82,7 +82,7 @@ export default function MultiStep() {
                     {step === 3 && <DocumentUpload form={form} />}
 
                     <div className='pt-2 mt-4 flex flex-row justify-around items-center'>
-                        <Button type="button" onClick={prevStep} disabled={step === 1}><ArrowLeft/>Back</Button>
+                        <Button type="button" onClick={prevStep} disabled={step === 1 || isSubmitted}><ArrowLeft/>Back</Button>
                         {step < 3 ? (
                             <Button type="button" onClick={nextStep}>Next<ArrowRight/></Button>
                         ) : (
