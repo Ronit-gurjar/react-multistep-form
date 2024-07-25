@@ -9,6 +9,7 @@ import {
 } from '../ui/form';
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Separator } from "../ui/separator";
 
 interface DocumentUploadProps {
     form: UseFormReturn<FormValues>;
@@ -18,6 +19,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ form }) => {
     const [fileName, setFileName] = useState<string>("");
 
     return (
+        <>
         <FormField
             control={form.control}
             name="document"
@@ -43,6 +45,8 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ form }) => {
                 </FormItem>
             )}
         />
+        <Separator/>
+        </>
     );
 }
 

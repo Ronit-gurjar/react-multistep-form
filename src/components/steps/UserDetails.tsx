@@ -10,6 +10,7 @@ import {
 } from '../ui/form';
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "../ui/separator";
 
 interface UserDetailsProps {
     form: UseFormReturn<FormValues>;
@@ -32,6 +33,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ form }) => {
                 )}
             />
 
+            <Separator/>
+
             <FormField
                 control={form.control}
                 name="email"
@@ -46,12 +49,17 @@ const UserDetails: React.FC<UserDetailsProps> = ({ form }) => {
                 )}
             />
 
+            <Separator/>
+
             <FormField
                 control={form.control}
                 name="subject"
                 render={({ field }) => (
-                    <FormItem className="flex flex-col items-start space-y-3">
+                    <FormItem className="flex flex-col m-2 items-start space-y-3">
                         <FormLabel>Subject</FormLabel>
+                        <FormDescription>
+                            what type of review you want.
+                        </FormDescription>
                         <FormControl>
                             <RadioGroup
                                 onValueChange={field.onChange}
@@ -84,13 +92,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ form }) => {
                                 </FormItem>
                             </RadioGroup>
                         </FormControl>
-                        <FormDescription>
-                            what type of review you want.
-                        </FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}
             />
+            <Separator/>
         </>
     );
 }

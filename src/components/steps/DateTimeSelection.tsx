@@ -9,6 +9,7 @@ import {
 } from '../ui/form';
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { Separator } from "../ui/separator";
 
 interface DateTimeSelectionProps {
     form: UseFormReturn<FormValues>;
@@ -36,6 +37,8 @@ const DateTimeSelection: React.FC<DateTimeSelectionProps> = ({ form }) => {
                 )}
             />
 
+            <Separator/>
+
             <FormField
                 control={form.control}
                 name="time"
@@ -49,6 +52,8 @@ const DateTimeSelection: React.FC<DateTimeSelectionProps> = ({ form }) => {
                     </FormItem>
                 )}
             />
+
+            <Separator/>
         </>
     );
 }
