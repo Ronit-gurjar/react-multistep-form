@@ -28,11 +28,9 @@ export default function MultiStep() {
 
     const nextStep = () => {
         setStep(prev => Math.min(prev + 1,totalSteps))
-        setIsSubmitted(false)  // Reset submission state when moving to next step
     }
     const prevStep = () => {
         setStep(prev => Math.max(prev - 1, 1))
-        setIsSubmitted(false)  // Reset submission state when moving to previous step
     }
 
         // 1. Define your form.
